@@ -1,0 +1,35 @@
+name: "on push feature branch"
+
+on:
+  push:
+    branches:
+      - "feature/crud-user"
+
+jobs:
+  testing:
+    name: Testing API
+    runs-on: ubuntu-latest
+    container: golang:1.18
+    services:
+      mysql:
+        image: mariadb:10.1
+        env:
+          MYSQL_ROOT_PASSWORD: testpw
+          MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
+    strategy:
+      matrix:
+        go: ["1.18"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: running test
+        env:
+          DBNAME: testdb
+          DBHOST: mysql
+          DBPORT: 3306
+          DBUSER: root
+          DBPASS: testpw
+        run: |
+          go mod tidy
+          go test ./...
