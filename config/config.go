@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	agencyRepo "github.com/Jiran03/mailku/agency/repository/mysql"
+	mailRepo "github.com/Jiran03/mailku/mail/repository/mysql"
 	userRepo "github.com/Jiran03/mailku/user/repository/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -71,5 +73,7 @@ func DBInit() (DB *gorm.DB) {
 func DBMigrate(DB *gorm.DB) {
 	DB.AutoMigrate(
 		&userRepo.User{},
+		&agencyRepo.Agency{},
+		&mailRepo.Mail{},
 	)
 }

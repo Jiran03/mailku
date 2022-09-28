@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "feature/crud-user"
+      - "feature/mail"
 
 jobs:
   testing:
