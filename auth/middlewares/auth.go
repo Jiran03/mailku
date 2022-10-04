@@ -50,7 +50,6 @@ func (cJWT ConfigJWT) CreateToken(userID string, username string) (token string,
 }
 
 func ExtractToken(ctx echo.Context) jwt.MapClaims {
-	// paramID = ctx.Param("id")
 	user := ctx.Get("user").(*jwt.Token)
 	token, _ := jwt.Parse(user.Raw, func(t *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
@@ -68,15 +67,34 @@ func UserValidation(userController userHandlerAPI.UserHandler) echo.MiddlewareFu
 			claims := ExtractToken(ctx)
 			username := claims["username"].(string)
 			validUserID, _, err := userController.GetValidUsername(username)
-			if paramID != validUserID {
-				return errors.New("anda tidak dapat mengakses endpoint ini")
-			}
-
 			if err != nil {
 				return err
 			}
 
+			if paramID != validUserID {
+				return errors.New("anda tidak dapat mengakses endpoint ini")
+			}
+
 			return hf(ctx)
+		}
+	}
+}
+
+func RoleValidation(role string, userController userHandlerAPI.UserHandler) echo.MiddlewareFunc {
+	return func(hf echo.HandlerFunc) echo.HandlerFunc {
+		return func(ctx echo.Context) error {
+			claims := ExtractToken(ctx)
+			username := claims["username"].(string)
+			_, userRole, err := userController.GetValidUsername(username)
+			if err != nil {
+				return err
+			}
+
+			if userRole == role {
+				return hf(ctx)
+			} else {
+				return errors.New("role tidak ditemukan")
+			}
 		}
 	}
 }

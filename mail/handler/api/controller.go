@@ -1,6 +1,7 @@
 package handlerAPI
 
 import (
+	"mime/multipart"
 	"net/http"
 
 	"github.com/Jiran03/mailku/mail/domain"
@@ -95,8 +96,12 @@ func (mh MailHandler) Update(ctx echo.Context) error {
 	ctx.Bind(&req)
 	id := ctx.Param("id")
 	receipt, _ := ctx.FormFile("receipt")
-	src, _ := receipt.Open()
-	defer src.Close()
+
+	var src multipart.File
+	if receipt != nil {
+		src, _ = receipt.Open()
+		defer src.Close()
+	}
 
 	req.Receipt = src
 	mailRes, err := mh.service.UpdateData(id, toDomain(req))

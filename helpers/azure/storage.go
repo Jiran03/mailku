@@ -14,7 +14,7 @@ import (
 
 func randomString() string {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	return fmt.Sprintf("%s.jpg", strconv.Itoa(r.Int()))
+	return fmt.Sprintf("%s.webp", strconv.Itoa(r.Int()))
 }
 
 func GetAccountInfo() (string, string, string, string) {
@@ -36,13 +36,12 @@ func UploadBytesToBlob(b []byte) (string, error) {
 
 	// Another Azure Specific object, which combines our generated URL and credentials
 	blockBlobUrl := azblob.NewBlockBlobURL(*u, azblob.NewPipeline(credential, azblob.PipelineOptions{}))
-
 	ctx := context.Background() // We create an empty context (https://golang.org/pkg/context/#Background)
 
 	// Provide any needed options to UploadToBlockBlobOptions (https://godoc.org/github.com/Azure/azure-storage-blob-go/azblob#UploadToBlockBlobOptions)
 	o := azblob.UploadToBlockBlobOptions{
 		BlobHTTPHeaders: azblob.BlobHTTPHeaders{
-			ContentType: "image/jpg", //  Add any needed headers here
+			ContentType: "image/webp", //  Add any needed headers here
 		},
 	}
 

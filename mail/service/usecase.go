@@ -2,7 +2,8 @@ package service
 
 import (
 	"bytes"
-	"io"
+	"image"
+	"image/jpeg"
 
 	authMiddleware "github.com/Jiran03/mailku/auth/middlewares"
 	uploadImageHelper "github.com/Jiran03/mailku/helpers/azure"
@@ -25,11 +26,20 @@ func (ms mailService) UpdateData(id string, domain domain.Mail) (mailObj domain.
 	domain.ID = mailObj.ID
 	domain.IDX = id
 	if domain.Receipt != nil {
+		//Compres image size
 		buf := bytes.NewBuffer(nil)
-		if _, err := io.Copy(buf, domain.Receipt); err != nil {
+		image, _, err := image.Decode(domain.Receipt)
+		if err != nil {
 			return mailObj, err
 		}
 
+		if err = jpeg.Encode(buf, image, &jpeg.Options{
+			Quality: 45,
+		}); err != nil {
+			return mailObj, err
+		}
+
+		//Upload image to storage
 		data := buf.Bytes()
 		if domain.ReceiptLink, err = uploadImageHelper.UploadBytesToBlob(data); err != nil {
 			return mailObj, err
@@ -58,17 +68,28 @@ func (ms mailService) GetByID(id string) (mailObj domain.Mail, err error) {
 }
 
 func (ms mailService) InsertData(domain domain.Mail) (mailObj domain.Mail, err error) {
+	domain.IDX = uuid.New().String()
+
+	//Compres image size
 	buf := bytes.NewBuffer(nil)
-	if _, err := io.Copy(buf, domain.Receipt); err != nil {
+	image, _, err := image.Decode(domain.Receipt)
+	if err != nil {
 		return mailObj, err
 	}
 
-	domain.IDX = uuid.New().String()
+	if err = jpeg.Encode(buf, image, &jpeg.Options{
+		Quality: 45,
+	}); err != nil {
+		return mailObj, err
+	}
+
+	//Upload image to storage
 	data := buf.Bytes()
 	if domain.ReceiptLink, err = uploadImageHelper.UploadBytesToBlob(data); err != nil {
 		return mailObj, err
 	}
 
+	//Insert into repository
 	domain.CreatedAt = timeHelper.Timestamp()
 	domain.UpdatedAt = timeHelper.Timestamp()
 	if mailObj, err = ms.repository.Create(domain); err != nil {

@@ -21,6 +21,7 @@ func (mr mailRepository) Update(domain domain.Mail) (mailObj domain.Mail, err er
 		"letter_date":         rec.LetterDate,
 		"receiving_agency_id": rec.ReceivingAgencyID,
 		"receiver":            rec.Receiver,
+		"date_of_receipt":     rec.DateOfReceipt,
 		"receipt_link":        rec.ReceiptLink,
 		"created_at":          rec.CreatedAt,
 		"updated_at":          rec.UpdatedAt,
@@ -74,8 +75,7 @@ func (mr mailRepository) Create(domain domain.Mail) (mailObj domain.Mail, err er
 // Delete implements domain.Repository
 func (mr mailRepository) Delete(id string) (err error) {
 	var record Mail
-	err = mr.DB.Delete(&record, id).Error
-	if err != nil {
+	if err = mr.DB.Where("id_x = ?", id).Delete(&record).Error; err != nil {
 		return err
 	}
 

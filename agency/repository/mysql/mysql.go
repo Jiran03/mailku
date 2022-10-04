@@ -68,7 +68,7 @@ func (ar agencyRepository) Create(domain domain.Agency) (agencyObj domain.Agency
 // Delete implements domain.Repository
 func (ar agencyRepository) Delete(id string) (err error) {
 	var record Agency
-	if err = ar.DB.Delete(&record, id).Error; err != nil {
+	if err = ar.DB.Where("id_x = ?", id).Delete(&record).Error; err != nil {
 		return err
 	}
 

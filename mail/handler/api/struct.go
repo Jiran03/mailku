@@ -12,7 +12,7 @@ type RequestJSON struct {
 	Sender            string         `json:"sender" form:"sender" validate:"required"`
 	ReferenceNumber   string         `json:"reference_number" form:"reference_number" validate:"required"`
 	LetterDate        string         `json:"letter_date" form:"letter_date" validate:"required"`
-	ReceivingAgencyID int            `json:"receiving_agency" form:"receiving_agency" validate:"required"`
+	ReceivingAgencyID int            `json:"receiving_agency_id" form:"receiving_agency_id" validate:"required"`
 	Receiver          string         `json:"receiver" form:"receiver" validate:"required"`
 	DateOfReceipt     string         `json:"date_of_receipt" form:"date_of_receipt" validate:"required"`
 	Receipt           multipart.File `form:"receipt"`
@@ -36,7 +36,7 @@ type ResponseJSON struct {
 	Sender            string    `json:"sender" form:"sender"`
 	ReferenceNumber   string    `json:"reference_number" form:"reference_number"`
 	LetterDate        string    `json:"letter_date" form:"letter_date"`
-	ReceivingAgencyID int       `json:"receiving_agency" form:"receiving_agency"`
+	ReceivingAgencyID int       `json:"receiving_agency_id" form:"receiving_agency_id"`
 	Receiver          string    `json:"receiver" form:"receiver"`
 	DateOfReceipt     string    `json:"date_of_receipt" form:"date_of_receipt"`
 	ReceiptLink       string    `json:"receipt_link" form:"receipt_link"`
