@@ -21,6 +21,10 @@ func (us userService) UpdateData(id string, domain domain.User) (userObj domain.
 		return userObj, err
 	}
 
+	if domain.Password, err = encryptHelper.Hash(domain.Password); err != nil {
+		return userObj, err
+	}
+
 	domain.ID = userObj.ID
 	domain.IDX = id
 	domain.CreatedAt = userObj.CreatedAt

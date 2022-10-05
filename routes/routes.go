@@ -47,7 +47,7 @@ func New() *echo.Echo {
 	userG := v1.Group("/user")
 	userG.Use(middleware.JWT([]byte(os.Getenv("JWT_SECRET"))))
 	userG.GET("/:id", user.GetByID)
-	userG.PUT("/:id", user.Update, middlewares.UserValidation(user)) // update user error karena saat inpput password belum dienkrip
+	userG.PUT("/:id", user.Update, middlewares.UserValidation(user))
 	userG.DELETE("/:id", user.Delete, middlewares.UserValidation(user))
 
 	agencyG := v1.Group("/agency")
